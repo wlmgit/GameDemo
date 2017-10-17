@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEditor;
 
-namespace Tool.Editor
+namespace Tools.Editor
 {
     public class ToolsPreference : UnityEditor.Editor
     {

@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEditor;
 using System;
 
-namespace Tool.Editor
+namespace Tools.Editor
 {
     public class ToolWindow : EditorWindow
     {
@@ -13,6 +13,17 @@ namespace Tool.Editor
         private static Rect m_preferencePanelRect;
 
         private bool m_showPreference;
+
+        private Vector2 m_mouseCurrentPosition = Vector2.zero;
+
+        #region 左边属性选择
+        private Rect m_propertyToobarRect;
+        private int m_toolbarSelect = 1;
+        private string[] m_toolbarString = new string[] {
+        "menu1",
+        "menu2",
+        "menu3"};
+        #endregion
 
         [MenuItem("Tool/Tool Name/Editor")]
         public static void ShowWindow()
@@ -31,12 +42,14 @@ namespace Tool.Editor
 
         public void OnGUI()
         {
+            this.m_mouseCurrentPosition = Event.current.mousePosition;
             SetupSize();
             if ( Draw() )
             {
 
             }
             DrawToolPreference();
+            this.HandleEvent();
         }
 
         private void SetupSize()
@@ -44,16 +57,18 @@ namespace Tool.Editor
             float width = base.position.width;
             m_fileToolbarRect = new Rect(0,0,width,18);
             m_preferencePanelRect = new Rect(width - 290,20,290,50);
+            m_propertyToobarRect = new Rect(0,0,300,18);
         }
         private bool Draw()
         {
             bool result = false;
             DrawFileToolbar();
+            DrawPropertyToolbar();
             return result;
         }
         private void DrawFileToolbar()
         {
-            GUILayout.BeginArea(m_fileToolbarRect,EditorStyles.toolbar);
+            GUILayout.BeginArea(m_fileToolbarRect, EditorStyles.toolbar);
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Preference",(!m_showPreference) ? EditorStyles.toolbarButton : ToolUtility.ToolbarSelectStyle ,GUILayout.Width(80f)))
@@ -74,9 +89,50 @@ namespace Tool.Editor
             }
         }
 
+        /// <summary>
+        /// 左边toolbar选择面板
+        /// </summary>
+        private void DrawPropertyToolbar()
+        {
+            GUILayout.BeginArea(m_propertyToobarRect,EditorStyles.toolbar);
+            int preSelect = m_toolbarSelect;
+            m_toolbarSelect = GUILayout.Toolbar(m_toolbarSelect,m_toolbarString,EditorStyles.toolbarButton);
+            GUILayout.EndArea();
+
+            if (m_toolbarSelect == 0)
+            {
+                Debug.Log(String.Format("preselect is {0}", preSelect));
+                Debug.Log("menu1 is select");
+            }
+            else if (m_toolbarSelect == 1)
+            {
+                Debug.Log(String.Format("preselect is {0}", preSelect));
+                Debug.Log("menu2 is select");
+            }
+            else if (m_toolbarSelect == 2)
+            {
+                Debug.Log(String.Format("preselect is {0}", preSelect));
+                Debug.Log("menu3 is Select");
+            }
+        }
+
         private void PrefChanged( EToolPreference pref, System.Object value)
         {
             Debug.Log(value.ToString());
+        }
+
+        private void HandleEvent()
+        {
+            EventType type = Event.current.type;
+            switch (type)
+            {
+                case EventType.MouseDown:
+                    Debug.Log("click");
+                    break;
+                case EventType.MouseDrag:
+                    Debug.Log("drag");
+                    break;
+            }
         }
     }
 }

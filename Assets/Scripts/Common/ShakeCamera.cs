@@ -116,6 +116,7 @@ public class ShakeCamera : MonoBehaviour {
             {
                 mIsShake = false;
                 m_curShakeTime = 0;
+                //恢复到初始位置
                 mCameraTrans.position = mDefaultPos;
             }
         }

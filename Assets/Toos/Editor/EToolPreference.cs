@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tool.Editor
+namespace Tools.Editor
 {
     public enum EToolPreference
     {
