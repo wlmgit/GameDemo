@@ -25,6 +25,11 @@ namespace Tools.Editor
         "menu3"};
         #endregion
 
+        private GameObject m_selectObject;
+
+        [SerializeField]
+        private GenericMenu m_gameobjectMenu;
+
         [MenuItem("Tool/Tool Name/Editor")]
         public static void ShowWindow()
         {
@@ -55,7 +60,7 @@ namespace Tools.Editor
         private void SetupSize()
         {
             float width = base.position.width;
-            m_fileToolbarRect = new Rect(0,0,width,18);
+            m_fileToolbarRect = new Rect(300,0,width-300,18);
             m_preferencePanelRect = new Rect(width - 290,20,290,50);
             m_propertyToobarRect = new Rect(0,0,300,18);
         }
@@ -70,6 +75,12 @@ namespace Tools.Editor
         {
             GUILayout.BeginArea(m_fileToolbarRect, EditorStyles.toolbar);
             GUILayout.BeginHorizontal();
+            string selectObjName = m_selectObject == null ? "None Select" : m_selectObject.name;
+            if (GUILayout.Button(selectObjName, EditorStyles.toolbarPopup, GUILayout.Width(150)))
+            {
+                BuildGameobjectMenus();
+                m_gameobjectMenu.ShowAsContext();
+            }
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Preference",(!m_showPreference) ? EditorStyles.toolbarButton : ToolUtility.ToolbarSelectStyle ,GUILayout.Width(80f)))
             {
@@ -77,6 +88,18 @@ namespace Tools.Editor
             }
             GUILayout.EndHorizontal();
             GUILayout.EndArea();
+        }
+
+        private void BuildGameobjectMenus()
+        {
+            m_gameobjectMenu = new GenericMenu();
+            m_gameobjectMenu.AddItem(new GUIContent("key"),false,new GenericMenu.MenuFunction(SelectCallBack));
+            m_gameobjectMenu.AddItem(new GUIContent("key1"), false, new GenericMenu.MenuFunction(SelectCallBack));
+        }
+        private void SelectCallBack()
+        {
+            Debug.Log("callback");
+            m_selectObject = GameObject.Find("Cube");
         }
 
         private void DrawToolPreference()
